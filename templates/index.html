@@ -181,6 +181,7 @@
               success: function (res) {
                   $('#response').text("Boolean: "+res['success']);
                   console.log('Success!');
+                  console.log(res['reason_code'])
                   $('#upload-file-btn').text('Same Face or Different Face?');
                   return false;
               },

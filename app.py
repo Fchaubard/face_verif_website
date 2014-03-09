@@ -1,3 +1,5 @@
+import setup_and_run_website
+import sys
 import os
 from datetime import datetime
 from flask import Flask, render_template, send_from_directory
@@ -86,11 +88,16 @@ def upload():
             ##############
             # now call matlab call!!!!
             ###############
-            if on_demand.decide(os.path.abspath('../cs231a/src/matlab'), os.path.abspath('../cs231a/params/gmm_params_rooted_df'),
-            os.path.abspath(filename1), os.path.abspath(filename2)):
-                return_object = jsonify({"success":True})
-            else:
-                return_object = jsonify({"success":False})
+            try:
+                if on_demand.decide(  setup_and_run_website.matlab_scripts_dir, setup_and_run_website.params_scripts_dir,
+                                     os.path.abspath(filename1), os.path.abspath(filename2)):
+                    return_object = jsonify(success=True,reason_code='')
+                else:
+                    return_object = jsonify(success=False,reason_code='')
+            except Exception as e:
+                return_object = jsonify(success=False, reason_code=e.message)
+
+
             ################
 
             # now delete the images..
