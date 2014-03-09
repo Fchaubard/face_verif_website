@@ -2,6 +2,7 @@ import os
 from datetime import datetime
 from flask import Flask, render_template, send_from_directory
 from flask import url_for, redirect, jsonify, request
+import on_demand
 
 #from flask_s3 import FlaskS3
 
@@ -68,6 +69,8 @@ app.config['UPLOAD_FOLDER'] = 'uploads'
 @app.route('/upload', methods=['POST'])
 def upload():
     print 'hit'
+    if not os.path.exists(app.config['UPLOAD_FOLDER']):
+        os.mkdir(app.config['UPLOAD_FOLDER'])
     if request.method == 'POST':
         file1 = request.files['file1']
         file2 = request.files['file2']
@@ -80,18 +83,15 @@ def upload():
             print filename2
             file2.save(filename2)
             
-            
             ##############
             # now call matlab call!!!!
             ###############
-            if(True):
-            	#mikeScript( "".join(os.getcwd(),"/",filename1)  , "".join(os.getcwd(),"/",filename2))
+            if on_demand.decide(os.path.abspath('../cs231a/src/matlab'), os.path.abspath('../cs231a/params/gmm_params_rooted_df'),
+            os.path.abspath(filename1), os.path.abspath(filename2)):
                 return_object = jsonify({"success":True})
             else:
                 return_object = jsonify({"success":False})
-            
             ################
-
 
             # now delete the images..
             os.remove(filename1) 
