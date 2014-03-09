@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="shortcut icon" href="../../assets/ico/favicon.png">
+    
+    <title>BLAH Recommendation Engine</title>
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
+    <link href="{{ url_for('static', filename='css/jumbotron-narrow.css') }}" rel="stylesheet">
+    
+
+    <style type="text/css">
+      #dropbox1 { 
+        background-color:#E8E8E8; 
+        text-align: center;
+        vertical-align: middle; 
+        line-height: 300px;   
+        clear:both;
+        border: 10px dashed #ccc; 
+        width: 300px; 
+        height: 300px; 
+        margin: 20px auto;
+      }
+      #dropbox1.hover { 
+        border: 10px dashed #333; 
+      } 
+      #dropbox1.dropped { 
+        line-height: 20px;  
+        width: 300px; 
+        height: 300px;  
+        border: 10px dashed #333; 
+      } 
+      #dropbox2 { 
+        background-color:#E8E8E8; 
+        text-align: center;
+        vertical-align: middle; 
+        line-height: 300px;   
+        clear:both;
+        border: 10px dashed #ccc; 
+        width: 300px; 
+        height: 300px; 
+        margin: 20px auto;
+      }
+      #dropbox2.hover { 
+        border: 10px dashed #333; 
+      } 
+      #dropbox2.dropped { 
+        line-height: 20px;  
+        width: 300px; 
+        height: 300px;  
+        border: 10px dashed #333; 
+      }
+
+
+    </style>
+    
+    <!--<script src="{{ url_for('static', filename='js/image_loader.js') }}" />
+    -->
+    <!-- Custom styles for this template -->
+    <!--<link href="/home/shikongle/Desktop/Y/Apps/Maps/static/css/justified-narrow.css" rel="stylesheet">-->
+
+    <link rel="shortcut icon" href="{{ url_for('static', filename='ico/favicon.ico') }}">
+
+    
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="../../assets/js/html5shiv.js"></script>
+      <script src="../../assets/js/respond.min.js"></script>
+    <![endif]-->
+  </head>
+ 
+  <body>
+
+    <div class="container">
+      <div class="header">
+        <ul class="nav nav-pills pull-right">
+          <li class="active"><a href="#">Home</a></li>
+          <li><a href="#">About</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+        <h3 class="text-muted">Face Verification for CS231a</h3>
+      </div>
+
+      <div class="jumbotron">
+        <h1>Face Verification Project</h1>
+        <p class="lead">Francois Chaubard and Mike Chrzanowski reimplemented <a href="">Face Verification in the Wild</a> for public use.</p>
+        
+      </div>
+
+      <div class="row marketing">
+        <div class="col-lg-6">
+          <h4>Load Pic 1</h4>
+          <div  id="dropbox1"><span id="status1">Feed me image file!</span><canvas id="imageCanvas1"  ></canvas></div>
+        </div>
+
+        <div class="col-lg-6">
+          <h4>Load Pic 2</h4>
+          <div id="dropbox2"><span id="status2">Feed me image file!</span><canvas id="imageCanvas2"></canvas></div>
+
+        </div>
+        <p style="text-align:center"><a id="upload-file-btn" class="btn btn-lg btn-success" href="">Same Face or Different Face?</a></p>
+        <p id="response" style="text-align:center"> </p>
+        <div class="progressHolder">
+          <div class="progress">
+          </div>
+        </div>
+      </div>
+
+
+      <div class="footer">
+        <p>&copy; Company 2013</p>
+      </div>
+
+    </div> <!-- /container -->
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+
+
+  <!--<script src="{{ url_for('static', filename='js/filedrop.js') }}" />-->
+ <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+ <script type="text/javascript">
+
+
+
+      /*if (typeof window.FileReader === 'undefined') {
+        state.className = 'File API & FileReader unavailable';
+      } else {
+        state.className = 'success';
+        state.innerHTML = stateStr;
+      }*/
+      var im1_given = false;
+      var im2_given = false;
+      var main = document.getElementById('main');
+      var dropbox1 = document.getElementById('dropbox1');
+      var dropbox2 = document.getElementById('dropbox2');
+      var stateStr = 'Drag image file here asdaf';
+      var dropStr = 'Drop image file! asd fadf ';
+      var canvas1 = document.getElementById('imageCanvas1');
+      var canvas2 = document.getElementById('imageCanvas2');
+      var file1 = false;
+      var file2 = false;
+      state1 = document.getElementById('status1');
+      state2 = document.getElementById('status2');
+
+
+      /*function handleImage(e,canvas){
+        var reader = new FileReader();
+        reader.onload = function(event){
+            var img = new Image();
+            img.onload = function(){
+                canvas.width = img.width;
+                canvas.height = img.height;
+                canvas.getContext('2d').drawImage(img,0,0);
+                
+            }
+            img.src = event.target.result;
+        }
+            reader.readAsDataURL(e.target.files[0]);     
+      }*/
+
+      dropbox1.ondragover = function () { 
+        if (!im1_given){
+          this.className = 'hover'; 
+          state1.innerHTML = dropStr;
+        } 
+        return false; 
+      };
+      dropbox1.ondragend = function () { 
+        if (!im1_given){
+          this.className = 'nohover'; 
+          state1.innerHTML = stateStr; 
+        }
+        return false; 
+      };
+      dropbox1.ondragleave = function (){ 
+        if (!im1_given){
+          this.className = 'nohover'; 
+          state1.innerHTML = stateStr; 
+        }
+        return false; 
+      };
+      dropbox1.ondrop = function (e){ 
+        this.className = 'dropped'; 
+        state1.innerHTML = ""; 
+        //handleImage(e,canvas1); 
+        e.preventDefault();
+        //readfiles(e.dataTransfer.files);
+        //for (var i = 0; i < e.dataTransfer.files.length; i++) {
+        previewfile(e.dataTransfer.files[0],canvas1);
+        //}
+        file1=e.dataTransfer.files[0];
+        im1_given=true;
+        
+        return false; 
+      };
+
+      dropbox2.ondragover = function () { 
+        if (!im2_given){
+          this.className = 'hover'; 
+          state2.innerHTML = dropStr;
+        } 
+        return false; 
+      };
+      dropbox2.ondragend = function () { 
+        if (!im2_given){
+          this.className = 'nohover'; 
+          state2.innerHTML = stateStr; 
+        }
+        return false; 
+      };
+      dropbox2.ondragleave = function (){ 
+        if (!im2_given){
+          this.className = 'nohover'; 
+          state2.innerHTML = stateStr; 
+        }
+        return false; 
+      };
+      dropbox2.ondrop = function (e){ 
+          this.className = 'dropped'; 
+          state2.innerHTML = ""; 
+          //handleImage(e,canvas1); 
+          e.preventDefault();
+          //readfiles(e.dataTransfer.files);
+          //var formData = new FormData();
+          //for (var i = 0; i < e.dataTransfer.files.length; i++) {
+            //formData.append('file', e.dataTransfer.files[i]);
+            previewfile(e.dataTransfer.files[0],canvas2);
+          //}
+          file2=e.dataTransfer.files[0];
+          im2_given=true;
+          
+          return false; 
+      };
+
+
+
+      /*$(document).ready(function() { 
+        var options2 = { 
+            success:   processJson,  // post-submit callback 
+            dataType:  'json',
+            url:  'test.php?act=test'
+      }; 
+      $('#formProfileInfo').ajaxForm(options2);
+
+      $('#save').click(function () {
+          var btn = $(this)
+          btn.button('loading..')
+      }); 
+      function processJson(data)  { 
+                  if( data.status === 'success' ) {
+                      alert.success(data.message);
+      }
+                  if( data.status === 'error' ) {
+                      alert.error(data.message);
+      }
+      $('#save').button('reset');
+      */
+
+
+      $('#upload-file-btn').click(function(){
+        if (im1_given & im2_given){
+          
+          var form_data = new FormData();
+          form_data.append('file1', file1);
+          form_data.append('file2', file2);
+          $('#upload-file-btn').text('Loading..');
+          $.ajax({
+              type: 'POST',
+              url: '/upload',
+              data: form_data,
+              contentType: false,
+              cache: false,
+              processData: false,
+              async: false,
+              success: function (res) {
+                  $('#response').text("Boolean: "+res['success']);
+                  console.log('Success!');
+                  $('#upload-file-btn').text('Same Face or Different Face?');
+                  return false;
+              },
+          });
+        }
+        return false;
+      });
+      
+      
+
+/*var holder = document.getElementById('holder'),
+    tests = {
+      filereader: typeof FileReader != 'undefined',
+      dnd: 'draggable' in document.createElement('span'),
+      formdata: !!window.FormData,
+      progress: "upload" in new XMLHttpRequest
+    }, 
+    support = {
+      filereader: document.getElementById('filereader'),
+      formdata: document.getElementById('formdata'),
+      progress: document.getElementById('progress')
+    },
+    acceptedTypes = {
+      'image/png': true,
+      'image/jpeg': true,
+      'image/gif': true
+    },
+    progress = document.getElementById('uploadprogress'),
+    fileupload = document.getElementById('upload');*/
+
+/*"filereader formdata progress".split(' ').forEach(function (api) {
+  if (tests[api] === false) {
+    support[api].className = 'fail';
+  } else {
+    // FFS. I could have done el.hidden = true, but IE doesn't support
+    // hidden, so I tried to create a polyfill that would extend the
+    // Element.prototype, but then IE10 doesn't even give me access
+    // to the Element object. Brilliant.
+    support[api].className = 'hidden';
+  }
+});*/
+
+function previewfile(file,canvas) {
+  //if (tests.filereader === true && acceptedTypes[file.type] === true) {
+    var reader = new FileReader();
+    reader.onload = function (event) {
+      var img = new Image();
+      
+
+      var ctx = canvas.getContext('2d');
+      img.src = event.target.result;
+
+      img.onload = function () {
+          ctx.drawImage(img,0,0);
+      }
+      canvas.width = img.width;
+      canvas.height = img.height;
+    };
+
+    reader.readAsDataURL(file);
+  /*}  else {
+    holder.innerHTML += '<p>Uploaded ' + file.name + ' ' + (file.size ? (file.size/1024|0) + 'K' : '');
+    console.log(file);
+  }*/
+}
+
+/*function readfiles(files) {
+    debugger;
+    var formData = tests.formdata ? new FormData() : null;
+    for (var i = 0; i < files.length; i++) {
+      if (tests.formdata) formData.append('file', files[i]);
+      previewfile(files[i]);
+    }
+
+    // now post a new XHR request
+    if (tests.formdata) {
+      var xhr = new XMLHttpRequest();
+      xhr.open('POST', '/devnull.php');
+      xhr.onload = function() {
+        progress.value = progress.innerHTML = 100;
+      };
+
+      if (tests.progress) {
+        xhr.upload.onprogress = function (event) {
+          if (event.lengthComputable) {
+            var complete = (event.loaded / event.total * 100 | 0);
+            progress.value = progress.innerHTML = complete;
+          }
+        }
+      }
+
+      xhr.send(formData);
+    }
+}
+
+if (tests.dnd) { 
+  holder.ondragover = function () { this.className = 'hover'; return false; };
+  holder.ondragend = function () { this.className = ''; return false; };
+  holder.ondrop = function (e) {
+    this.className = '';
+    e.preventDefault();
+    //readfiles(e.dataTransfer.files);
+    var formData = tests.formdata ? new FormData() : null;
+    for (var i = 0; i < e.dataTransfer.files.length; i++) {
+      if (tests.formdata) formData.append('file', e.dataTransfer.files[i]);
+      previewfile(e.dataTransfer.files[i]);
+    }
+  }
+} else {
+  fileupload.className = 'hidden';
+  fileupload.querySelector('input').onchange = function () {
+    readfiles(this.files);
+  };
+}*/
+
+
+
+
+
+
+
+  </script>
+
+
+
+
+  </body>
+</html>
