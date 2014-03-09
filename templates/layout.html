@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/jumbotron-narrow.css') }}" >
     <link rel="shortcut icon" href="{{ url_for('static', filename='ico/favicon.ico') }}">
+    <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
     {% block head %}
    
     <title>{% block title %}{% endblock %} - Face Verification Project</title>
@@ -18,20 +19,14 @@
   </head>
   <body>
     <div class="container">
-      <div class="header">
-        <ul class="nav nav-pills pull-right">
-          <li class="active"><a href="#">Home</a></li>
-          <li><a href="#">About</a></li>
-          <li><a href="/contact">Contact</a></li>
-        </ul>
-        <h3 class="text-muted">Face Verification for CS231a</h3>
-      </div>
+      
       {% block content %}
       {% endblock %}
     
       <div id="footer">
         {% block footer %}
-        &copy; Copyright 2014 by <a href="#">Francois Chaubard</a>.
+         
+        &copy; Copyright 2014 by Francois Chaubard
         {% endblock %}
       </div>
     </div>

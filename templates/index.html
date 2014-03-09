@@ -7,10 +7,18 @@
     <link href="{{ url_for('static', filename='css/main_page_style.css') }}" rel="stylesheet">
 {% endblock %}
 {% block content %}
+      <div class="header">
+        <ul class="nav nav-pills pull-right">
+          <li class="active"><a href="#">Home</a></li>
+          <li><a href="/about">About</a></li>
+          <li><a href="/contact">Contact</a></li>
+        </ul>
+        <h3 class="text-muted">Face Verification for CS231a</h3>
+      </div>
 
       <div class="jumbotron">
         <h1>Face Verification Project</h1>
-        <p class="lead">Francois Chaubard and Mike Chrzanowski reimplemented <a href="">Face Verification in the Wild</a> for public use.</p>
+        <p class="lead">Francois Chaubard and Mike Chrzanowski reimplemented <a href="http://www.robots.ox.ac.uk/~vedaldi/assets/pubs/simonyan13fisher.pdf">Face Verification in the Wild</a> for public use.</p>
       </div>
 
       <div class="row marketing">
@@ -41,17 +49,11 @@
 
 
   <!--<script src="{{ url_for('static', filename='js/filedrop.js') }}" />-->
- <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+
  <script type="text/javascript">
 
 
 
-      /*if (typeof window.FileReader === 'undefined') {
-        state.className = 'File API & FileReader unavailable';
-      } else {
-        state.className = 'success';
-        state.innerHTML = stateStr;
-      }*/
       var im1_given = false;
       var im2_given = false;
       var main = document.getElementById('main');
@@ -66,21 +68,7 @@
       state1 = document.getElementById('status1');
       state2 = document.getElementById('status2');
 
-
-      /*function handleImage(e,canvas){
-        var reader = new FileReader();
-        reader.onload = function(event){
-            var img = new Image();
-            img.onload = function(){
-                canvas.width = img.width;
-                canvas.height = img.height;
-                canvas.getContext('2d').drawImage(img,0,0);
-                
-            }
-            img.src = event.target.result;
-        }
-            reader.readAsDataURL(e.target.files[0]);     
-      }*/
+      
 
       dropbox1.ondragover = function () { 
         if (!im1_given){
@@ -104,6 +92,10 @@
         return false; 
       };
       dropbox1.ondrop = function (e){ 
+        if (typeof window.FileReader === 'undefined') {
+          $('#response').text( 'File API & FileReader unavailable');
+          return false;
+        }
         this.className = 'dropped'; 
         state1.innerHTML = ""; 
         //handleImage(e,canvas1); 
@@ -140,6 +132,10 @@
         return false; 
       };
       dropbox2.ondrop = function (e){ 
+          if (typeof window.FileReader === 'undefined') {
+            $('#response').text( 'File API & FileReader unavailable');
+            return false;
+          }
           this.className = 'dropped'; 
           state2.innerHTML = ""; 
           //handleImage(e,canvas1); 
@@ -158,29 +154,6 @@
 
 
 
-      /*$(document).ready(function() { 
-        var options2 = { 
-            success:   processJson,  // post-submit callback 
-            dataType:  'json',
-            url:  'test.php?act=test'
-      }; 
-      $('#formProfileInfo').ajaxForm(options2);
-
-      $('#save').click(function () {
-          var btn = $(this)
-          btn.button('loading..')
-      }); 
-      function processJson(data)  { 
-                  if( data.status === 'success' ) {
-                      alert.success(data.message);
-      }
-                  if( data.status === 'error' ) {
-                      alert.error(data.message);
-      }
-      $('#save').button('reset');
-      */
-
-
       $('#upload-file-btn').click(function(){
         if (im1_given & im2_given){
           
@@ -196,6 +169,15 @@
               cache: false,
               processData: false,
               async: false,
+              timeout: 1,
+              error: function(jqXHR, textStatus, errorThrown) {
+                  if(textStatus==="timeout") {
+                    $('#response').text("Timed out! Server down?");
+                    console.log('Timed out!');
+                    $('#upload-file-btn').text('Same Face or Different Face?');
+                    return false;
+                  } 
+              },
               success: function (res) {
                   $('#response').text("Boolean: "+res['success']);
                   console.log('Success!');
@@ -211,37 +193,6 @@
       
       
 
-/*var holder = document.getElementById('holder'),
-    tests = {
-      filereader: typeof FileReader != 'undefined',
-      dnd: 'draggable' in document.createElement('span'),
-      formdata: !!window.FormData,
-      progress: "upload" in new XMLHttpRequest
-    }, 
-    support = {
-      filereader: document.getElementById('filereader'),
-      formdata: document.getElementById('formdata'),
-      progress: document.getElementById('progress')
-    },
-    acceptedTypes = {
-      'image/png': true,
-      'image/jpeg': true,
-      'image/gif': true
-    },
-    progress = document.getElementById('uploadprogress'),
-    fileupload = document.getElementById('upload');*/
-
-/*"filereader formdata progress".split(' ').forEach(function (api) {
-  if (tests[api] === false) {
-    support[api].className = 'fail';
-  } else {
-    // FFS. I could have done el.hidden = true, but IE doesn't support
-    // hidden, so I tried to create a polyfill that would extend the
-    // Element.prototype, but then IE10 doesn't even give me access
-    // to the Element object. Brilliant.
-    support[api].className = 'hidden';
-  }
-});*/
 
 function previewfile(file,canvas) {
   //if (tests.filereader === true && acceptedTypes[file.type] === true) {
@@ -261,62 +212,8 @@ function previewfile(file,canvas) {
     };
 
     reader.readAsDataURL(file);
-  /*}  else {
-    holder.innerHTML += '<p>Uploaded ' + file.name + ' ' + (file.size ? (file.size/1024|0) + 'K' : '');
-    console.log(file);
-  }*/
+
 }
-
-/*function readfiles(files) {
-    debugger;
-    var formData = tests.formdata ? new FormData() : null;
-    for (var i = 0; i < files.length; i++) {
-      if (tests.formdata) formData.append('file', files[i]);
-      previewfile(files[i]);
-    }
-
-    // now post a new XHR request
-    if (tests.formdata) {
-      var xhr = new XMLHttpRequest();
-      xhr.open('POST', '/devnull.php');
-      xhr.onload = function() {
-        progress.value = progress.innerHTML = 100;
-      };
-
-      if (tests.progress) {
-        xhr.upload.onprogress = function (event) {
-          if (event.lengthComputable) {
-            var complete = (event.loaded / event.total * 100 | 0);
-            progress.value = progress.innerHTML = complete;
-          }
-        }
-      }
-
-      xhr.send(formData);
-    }
-}
-
-if (tests.dnd) { 
-  holder.ondragover = function () { this.className = 'hover'; return false; };
-  holder.ondragend = function () { this.className = ''; return false; };
-  holder.ondrop = function (e) {
-    this.className = '';
-    e.preventDefault();
-    //readfiles(e.dataTransfer.files);
-    var formData = tests.formdata ? new FormData() : null;
-    for (var i = 0; i < e.dataTransfer.files.length; i++) {
-      if (tests.formdata) formData.append('file', e.dataTransfer.files[i]);
-      previewfile(e.dataTransfer.files[i]);
-    }
-  }
-} else {
-  fileupload.className = 'hidden';
-  fileupload.querySelector('input').onchange = function () {
-    readfiles(this.files);
-  };
-}*/
-
-
 
 
 
