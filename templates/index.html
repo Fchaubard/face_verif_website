@@ -1,95 +1,16 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="">
-    <meta name="author" content="">
-    <link rel="shortcut icon" href="../../assets/ico/favicon.png">
-    
-    <title>BLAH Recommendation Engine</title>
+{% extends "layout.html" %}
 
-    <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
-    <link href="{{ url_for('static', filename='css/jumbotron-narrow.css') }}" rel="stylesheet">
-    
+{% block title %}Index{% endblock %}
 
-    <style type="text/css">
-      #dropbox1 { 
-        background-color:#E8E8E8; 
-        text-align: center;
-        vertical-align: middle; 
-        line-height: 300px;   
-        clear:both;
-        border: 10px dashed #ccc; 
-        width: 300px; 
-        height: 300px; 
-        margin: 20px auto;
-      }
-      #dropbox1.hover { 
-        border: 10px dashed #333; 
-      } 
-      #dropbox1.dropped { 
-        line-height: 20px;  
-        width: 300px; 
-        height: 300px;  
-        border: 10px dashed #333; 
-      } 
-      #dropbox2 { 
-        background-color:#E8E8E8; 
-        text-align: center;
-        vertical-align: middle; 
-        line-height: 300px;   
-        clear:both;
-        border: 10px dashed #ccc; 
-        width: 300px; 
-        height: 300px; 
-        margin: 20px auto;
-      }
-      #dropbox2.hover { 
-        border: 10px dashed #333; 
-      } 
-      #dropbox2.dropped { 
-        line-height: 20px;  
-        width: 300px; 
-        height: 300px;  
-        border: 10px dashed #333; 
-      }
-
-
-    </style>
-    
-    <!--<script src="{{ url_for('static', filename='js/image_loader.js') }}" />
-    -->
-    <!-- Custom styles for this template -->
-    <!--<link href="/home/shikongle/Desktop/Y/Apps/Maps/static/css/justified-narrow.css" rel="stylesheet">-->
-
-    <link rel="shortcut icon" href="{{ url_for('static', filename='ico/favicon.ico') }}">
-
-    
-    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!--[if lt IE 9]>
-      <script src="../../assets/js/html5shiv.js"></script>
-      <script src="../../assets/js/respond.min.js"></script>
-    <![endif]-->
-  </head>
- 
-  <body>
-
-    <div class="container">
-      <div class="header">
-        <ul class="nav nav-pills pull-right">
-          <li class="active"><a href="#">Home</a></li>
-          <li><a href="#">About</a></li>
-          <li><a href="#">Contact</a></li>
-        </ul>
-        <h3 class="text-muted">Face Verification for CS231a</h3>
-      </div>
+{% block head %}
+  {{ super() }}
+    <link href="{{ url_for('static', filename='css/main_page_style.css') }}" rel="stylesheet">
+{% endblock %}
+{% block content %}
 
       <div class="jumbotron">
         <h1>Face Verification Project</h1>
         <p class="lead">Francois Chaubard and Mike Chrzanowski reimplemented <a href="">Face Verification in the Wild</a> for public use.</p>
-        
       </div>
 
       <div class="row marketing">
@@ -105,18 +26,14 @@
         </div>
         <p style="text-align:center"><a id="upload-file-btn" class="btn btn-lg btn-success" href="">Same Face or Different Face?</a></p>
         <p id="response" style="text-align:center"> </p>
-        <div class="progressHolder">
-          <div class="progress">
-          </div>
-        </div>
+       
       </div>
+{% endblock %}
+
+{% block footer %}
+{{ super() }}
 
 
-      <div class="footer">
-        <p>&copy; Company 2013</p>
-      </div>
-
-    </div> <!-- /container -->
 
     <!-- Bootstrap core JavaScript
     ================================================== -->
@@ -286,6 +203,8 @@
                   return false;
               },
           });
+        }else{
+          $('#response').text("Need to add photos first!");
         }
         return false;
       });
@@ -405,7 +324,7 @@ if (tests.dnd) {
 
   </script>
 
-
+{% endblock %}
 
 
   </body>

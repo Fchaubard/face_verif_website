@@ -38,8 +38,27 @@ def page_not_found(e):
 ###################
 @app.route('/')
 def base():
-    print 'here'
+    print 'index hit'
     return render_template('index.html')
+
+###################
+# about page
+###################
+@app.route('/about')
+def about():
+    print 'about hit'
+    return render_template('about.html')
+
+###################
+# contact us page
+###################
+@app.route('/contact')
+def contact():
+    print 'contact hit'
+    return render_template('contact.html')
+
+
+
 
 
 ###################
