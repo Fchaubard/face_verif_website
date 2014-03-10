@@ -70,10 +70,11 @@ def contact():
 app.config['UPLOAD_FOLDER'] = 'uploads'
 @app.route('/upload', methods=['POST'])
 def upload():
-    print 'hit'
+    
     if not os.path.exists(app.config['UPLOAD_FOLDER']):
         os.mkdir(app.config['UPLOAD_FOLDER'])
     if request.method == 'POST':
+        print 'hit'
         file1 = request.files['file1']
         file2 = request.files['file2']
         if file1 and file2 and allowed_file(file1.filename) and allowed_file(file2.filename):
@@ -91,7 +92,9 @@ def upload():
             try:
                 if on_demand.decide(  setup_and_run_website.matlab_scripts_dir, setup_and_run_website.params_scripts_dir,
                                      os.path.abspath(filename1), os.path.abspath(filename2)):
+                #if True:
                     return_object = jsonify(success=True,reason_code='')
+                    print 'success!'
                 else:
                     return_object = jsonify(success=False,reason_code='')
             except Exception as e:
@@ -118,5 +121,4 @@ def allowed_file(filename):
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
-
 

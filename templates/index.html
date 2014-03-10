@@ -32,7 +32,7 @@
           <div id="dropbox2"><span id="status2">Feed me image file!</span><canvas id="imageCanvas2"></canvas></div>
 
         </div>
-        <p style="text-align:center"><a id="upload-file-btn" class="btn btn-lg btn-success" href="">Same Face or Different Face?</a></p>
+        <p style="text-align:center"><a id="upload-file-btn" class="btn btn-lg btn-success" >Same Face or Different Face?</a></p>
         <p id="response" style="text-align:center"> </p>
        
       </div>
@@ -63,6 +63,8 @@
       var dropStr = 'Drop image file! asd fadf ';
       var canvas1 = document.getElementById('imageCanvas1');
       var canvas2 = document.getElementById('imageCanvas2');
+      $('#canvas1').toggle(); 
+      $('#canvas2').toggle(); 
       var file1 = false;
       var file2 = false;
       state1 = document.getElementById('status1');
@@ -155,12 +157,14 @@
 
 
       $('#upload-file-btn').click(function(){
+
         if (im1_given & im2_given){
-          
+          $('#upload-file-btn').text('Loading..');
           var form_data = new FormData();
           form_data.append('file1', file1);
           form_data.append('file2', file2);
-          $('#upload-file-btn').text('Loading..');
+          $("#upload-file-btn").removeAttr("click");
+          
           $.ajax({
               type: 'POST',
               url: '/upload',
@@ -168,24 +172,17 @@
               contentType: false,
               cache: false,
               processData: false,
-              async: false,
-              timeout: 1,
-              error: function(jqXHR, textStatus, errorThrown) {
-                  if(textStatus==="timeout") {
-                    $('#response').text("Timed out! Server down?");
-                    console.log('Timed out!');
-                    $('#upload-file-btn').text('Same Face or Different Face?');
-                    return false;
-                  } 
-              },
+              async: true,
               success: function (res) {
                   $('#response').text("Boolean: "+res['success']);
                   console.log('Success!');
                   console.log(res['reason_code'])
                   $('#upload-file-btn').text('Same Face or Different Face?');
+                  
                   return false;
               },
           });
+          return false;
         }else{
           $('#response').text("Need to add photos first!");
         }
