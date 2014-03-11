@@ -102,6 +102,7 @@ def upload():
                 try:
                     if on_demand.decide(setup_and_run_website.matlab_scripts_dir,
                                         setup_and_run_website.params_scripts_dir,
+                                        setup_and_run_website.vlfeat_src_dir,
                                         os.path.abspath(filename1),
                                         os.path.abspath(filename2)
                                     ):
