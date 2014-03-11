@@ -1,10 +1,17 @@
 import sys
 import os
-
+import socket
 # run this file to setup your environment and run the website
 
-python_scripts_dir = '/Users/francoischaubard/Desktop/cs231a/repo/cs231a/src/python/'
-params_scripts_dir = '/Users/francoischaubard/Desktop/cs231a/non_root_df_41k/'
-matlab_scripts_dir = '/Users/francoischaubard/Desktop/cs231a/repo/cs231a/src/matlab/'
+if 'ip-' in socket.gethostname():
+    python_scripts_dir = '/home/ubuntu/cs231a/src/python/'
+    params_scripts_dir = '/home/ubuntu/data/non_root_df_41k/'
+    matlab_scripts_dir = '/home/ubuntu/cs231a/src/matlab/'
+    matlab_bin = '/mnt/storage/MATLAB/R2013a/bin/'
+elif '-mba' in socket.gethostname():
+    python_scripts_dir = '../cs231a/src/python/'
+    params_scripts_dir = '../../Downloads/params/non_root_df_41k/'
+    matlab_scripts_dir = '../cs231a/src/matlab/'
+    matlab_bin = '/Applications/MATLAB/R2013a/bin/'
 
 sys.path.append(python_scripts_dir)

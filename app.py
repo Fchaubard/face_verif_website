@@ -90,17 +90,18 @@ def upload():
             # now call matlab call!!!!
             ###############
             try:
-                if on_demand.decide(  setup_and_run_website.matlab_scripts_dir, setup_and_run_website.params_scripts_dir,
-                                     os.path.abspath(filename1), os.path.abspath(filename2)):
-                #if True:
+                if on_demand.decide(setup_and_run_website.matlab_scripts_dir,
+                                    setup_and_run_website.matlab_bin,
+                                    setup_and_run_website.params_scripts_dir,
+                                    os.path.abspath(filename1),
+                                    os.path.abspath(filename2)
+                                ):
                     return_object = jsonify(success=True,reason_code='')
                     print 'success!'
                 else:
                     return_object = jsonify(success=False,reason_code='')
             except Exception as e:
                 return_object = jsonify(success=False, reason_code=e.message)
-
-
             ################
 
             # now delete the images..
@@ -119,6 +120,6 @@ def allowed_file(filename):
 #------------------------------
 
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port)
+    #port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=80)
 
