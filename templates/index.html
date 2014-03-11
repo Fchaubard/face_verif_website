@@ -40,7 +40,7 @@
 
         </div>
         <p style="text-align:center"><a id="upload-file-btn" class="btn btn-lg btn-success" >Same Face or Different Face?</a></p>
-        <p id="response" style="text-align:center"> </p>
+        <p id="response" style="text-align:center; font-size: 25px"> </p>
        
       </div>
 {% endblock %}
@@ -167,11 +167,16 @@
 
         if (im1_given & im2_given){
           $('#upload-file-btn').text('Loading..');
+
+          $('#response').text("Spinning up matlab takes awhile.. should be about 60 seconds");
           var form_data = new FormData();
           form_data.append('file1', file1);
           form_data.append('file2', file2);
           $("#upload-file-btn").removeAttr("click");
           
+          $('#dropbox1').css("background-color", "white");
+          $('#dropbox2').css("background-color", "white");
+          $('#response').css("background-color", "white");
           $.ajax({
               type: 'POST',
               url: '/upload',
@@ -181,7 +186,21 @@
               processData: false,
               async: true,
               success: function (res) {
-                  $('#response').text("Boolean: "+res['success']);
+                  
+                  if (res['success']===true){
+                    $('#dropbox1').css("background-color", "green");
+                    $('#dropbox2').css("background-color", "green");
+                    $('#response').text("Same Face!");
+
+                    $('#response').css("background-color", "green");
+                  }else{
+
+                    $('#dropbox1').css("background-color", "red");
+                    $('#dropbox2').css("background-color", "red");
+                    $('#response').text("Not Same Face!");
+
+                    $('#response').css("background-color", "red");
+                  }
                   console.log('Success!');
                   console.log(res['reason_code'])
                   $('#upload-file-btn').text('Same Face or Different Face?');
@@ -219,6 +238,8 @@ function previewfile(file,canvas) {
     reader.readAsDataURL(file);
 
 }
+
+
 
 
 

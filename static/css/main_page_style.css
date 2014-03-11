@@ -18,6 +18,20 @@
     height: 300px;  
     border: 10px dashed #333; 
   } 
+  #dropbox1.same { 
+    background-color:#00ff00; 
+        line-height: 20px;  
+    width: 300px; 
+    height: 300px;  
+    border: 10px dashed #333; 
+  } 
+  #dropbox1.different { 
+    background-color:#ff0000; 
+        line-height: 20px;  
+    width: 300px; 
+    height: 300px;  
+    border: 10px dashed #333; 
+  } 
   #dropbox2 { 
     background-color:#E8E8E8; 
     text-align: center;
