@@ -70,43 +70,53 @@ def contact():
 app.config['UPLOAD_FOLDER'] = 'uploads'
 @app.route('/upload', methods=['POST'])
 def upload():
-    
+    MAX_FILESIZE = 1000000; #1 mb
     if not os.path.exists(app.config['UPLOAD_FOLDER']):
         os.mkdir(app.config['UPLOAD_FOLDER'])
     if request.method == 'POST':
         print 'hit'
+    
         file1 = request.files['file1']
+        size1 = len(file1.read());
+        print size1
         file2 = request.files['file2']
-        if file1 and file2 and allowed_file(file1.filename) and allowed_file(file2.filename):
-            now = datetime.now()
-            filename1 = os.path.join(app.config['UPLOAD_FOLDER'], "%s_1.%s" % (now.strftime("%Y-%m-%d-%H-%M-%S-%f"), file1.filename.rsplit('.', 1)[1]))
-            print filename1
-            file1.save(filename1)
-            filename2 = os.path.join(app.config['UPLOAD_FOLDER'], "%s_2.%s" % (now.strftime("%Y-%m-%d-%H-%M-%S-%f"), file2.filename.rsplit('.', 1)[1]))
-            print filename2
-            file2.save(filename2)
-            
-            ##############
-            # now call matlab call!!!!
-            ###############
-            try:
-                if on_demand.decide(setup_and_run_website.matlab_scripts_dir,
-                                    setup_and_run_website.params_scripts_dir,
-                                    os.path.abspath(filename1),
-                                    os.path.abspath(filename2)
-                                ):
-                    return_object = jsonify(success=True,reason_code='')
-                    print 'success!'
-                else:
-                    return_object = jsonify(success=False,reason_code='')
-            except Exception as e:
-                return_object = jsonify(success=False, reason_code=e.message)
-            ################
+        size2 = len(file2.read());
+        print size2
+        if ((size1 < MAX_FILESIZE) and (size2 < MAX_FILESIZE)):
+            if file1 and file2 and allowed_file(file1.filename) and allowed_file(file2.filename):
 
-            # now delete the images..
-            os.remove(filename1) 
-            os.remove(filename2) 
 
+
+                now = datetime.now()
+                filename1 = os.path.join(app.config['UPLOAD_FOLDER'], "%s_1.%s" % (now.strftime("%Y-%m-%d-%H-%M-%S-%f"), file1.filename.rsplit('.', 1)[1]))
+                print filename1
+                file1.save(filename1)
+                filename2 = os.path.join(app.config['UPLOAD_FOLDER'], "%s_2.%s" % (now.strftime("%Y-%m-%d-%H-%M-%S-%f"), file2.filename.rsplit('.', 1)[1]))
+                print filename2
+                file2.save(filename2)
+                
+                ##############
+                # now call matlab call!!!!
+                ###############
+                try:
+                    if on_demand.decide(setup_and_run_website.matlab_scripts_dir,
+                                        setup_and_run_website.params_scripts_dir,
+                                        os.path.abspath(filename1),
+                                        os.path.abspath(filename2)
+                                    ):
+                        return_object = jsonify(success=True,reason_code='')
+                        print 'success!'
+                    else:
+                        return_object = jsonify(success=False,reason_code='')
+                except Exception as e:
+                    return_object = jsonify(success=False, reason_code=e.message)
+                ################
+
+                # now delete the images..
+                os.remove(filename1) 
+                os.remove(filename2) 
+            else:
+                return_object = jsonify(success=False, reason_code='Image File too big! 160x160px!') 
             return return_object
 
 ALLOWED_EXTENSIONS = ['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif']
