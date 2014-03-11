@@ -224,9 +224,10 @@
                     $('#response').css("background-color", "red");
                   }else{
                     console.log(res['reason_code'])
-                    $('#upload-file-btn').text('Same Face or Different Face?');
+                    
                     $('#response').text("Server probs! sorry.. :/ reason:"+res['reason_code']);
                   }
+                  $('#upload-file-btn').text('Same Face or Different Face?');
                   return false;
               },
           });

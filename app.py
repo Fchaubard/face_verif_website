@@ -109,7 +109,7 @@ def upload():
                     else:
                         return_object = jsonify(success=False,reason_code='')
                 except Exception as e:
-                    return_object = jsonify(success=False, reason_code=e.message)
+                    return_object = jsonify(success=False, reason_code="".join("error!",e.message))
                 ################
 
                 # now delete the images..
