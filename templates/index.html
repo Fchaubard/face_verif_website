@@ -161,23 +161,19 @@
           return false; 
       };
 
-      function bytes(string) {
-          var escaped_string = encodeURI(string);
-          if (escaped_string.indexOf("%") != -1) {
-            var count = escaped_string.split("%").length - 1;
-            count = count == 0 ? 1 : count;
-            count = count + (escaped_string.length - (count * 3));
-          }
-          else {
-            count = escaped_string.length;
-          }
-        }
+      var not_uploaded_already = true;
 
       $('#upload-file-btn').click(function(){
-
-        if (im1_given & im2_given){
+        if (not_uploaded_already === false){
+          $('#response').text("Already running! Chill...");
+          return false;
+          
+        }
+        if (im1_given & im2_given ){
+          
+          not_uploaded_already = false;
+          
           $('#upload-file-btn').text('Loading..');
-
           $('#response').text("Spinning up matlab takes awhile.. should be about 60 seconds");
           var form_data = new FormData();
           form_data.append('file1', file1);
@@ -190,7 +186,7 @@
           //var dataURL = canvas1.toDataURL("image/jpg");
 
           //var base_64 = dataURL.replace(/^data:image\/(png|jpg);base64,/, ""); 
-          console.log(file1.size);
+          /*console.log(file1.size);
           console.log(file2.size);
           MAX_FILE_SIZE=1000000;
           if(file1.size>MAX_FILE_SIZE || file2.size > MAX_FILE_SIZE ){
@@ -198,7 +194,7 @@
             $('#upload-file-btn').text('Same Face or Different Face?');
             return false;
           }
-
+          */
           $.ajax({
               type: 'POST',
               url: '/upload',
@@ -219,7 +215,7 @@
 
                     $('#dropbox1').css("background-color", "red");
                     $('#dropbox2').css("background-color", "red");
-                    $('#response').text("Not Same Face!");
+                    $('#response').text("Not Same Face! We might have server probs! ");
 
                     $('#response').css("background-color", "red");
                   }else{
@@ -228,13 +224,15 @@
                     $('#response').text("Server probs! sorry.. :/ reason:"+res['reason_code']);
                   }
                   $('#upload-file-btn').text('Same Face or Different Face?');
+                  not_uploaded_already = true;
                   return false;
               },
-          });
+          }); 
           return false;
         }else{
           $('#response').text("Need to add photos first!");
         }
+        
         return false;
       });
       

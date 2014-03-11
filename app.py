@@ -75,12 +75,13 @@ def upload():
         os.mkdir(app.config['UPLOAD_FOLDER'])
     if request.method == 'POST':
         print 'hit'
-    
+        size1=10
+        size2=10
         file1 = request.files['file1']
-        size1 = len(file1.read());
+        #size1 = len(file1.read());
         print size1
         file2 = request.files['file2']
-        size2 = len(file2.read());
+        #size2 = len(file2.read());
         print size2
         if ((size1 < MAX_FILESIZE) and (size2 < MAX_FILESIZE)):
             if file1 and file2 and allowed_file(file1.filename) and allowed_file(file2.filename):
