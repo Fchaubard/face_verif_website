@@ -215,18 +215,18 @@
                     $('#response').text("Same Face!");
 
                     $('#response').css("background-color", "green");
-                  }else{
+                  }else if(res['reason_code']!==''){
 
                     $('#dropbox1').css("background-color", "red");
                     $('#dropbox2').css("background-color", "red");
                     $('#response').text("Not Same Face!");
 
                     $('#response').css("background-color", "red");
+                  }else{
+                    console.log(res['reason_code'])
+                    $('#upload-file-btn').text('Same Face or Different Face?');
+                    $('#response').text("Server probs! sorry.. :/ reason:"+res['reason_code']);
                   }
-                  console.log('Success!');
-                  console.log(res['reason_code'])
-                  $('#upload-file-btn').text('Same Face or Different Face?');
-                  
                   return false;
               },
           });
