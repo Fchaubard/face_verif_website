@@ -6,7 +6,7 @@ import socket
 if 'ip-' in socket.gethostname():
     print 'ip!'
     python_scripts_dir = '/home/ubuntu/cs231a/src/python/'
-    params_scripts_dir = '/home/ubuntu/data/non_root_df_41k/'
+    params_scripts_dir = '/home/ubuntu/data/non_root_41k_vj/'
     matlab_scripts_dir = '/home/ubuntu/cs231a/src/matlab/'
     vlfeat_src_dir = '/home/ubuntu/vlfeat-0.9.18/'
 elif '-mba' in socket.gethostname():
