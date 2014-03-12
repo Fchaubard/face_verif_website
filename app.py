@@ -71,6 +71,9 @@ app.config['UPLOAD_FOLDER'] = 'uploads'
 @app.route('/upload', methods=['POST'])
 def upload():
     MAX_FILESIZE = 1000000; #1 mb
+    if (0!=len(os.listdir('/home/ubuntu/face_verif_website/uploads'))):
+        return_object = jsonify(success=False,reason_code='Server in use. Please try again in 10min.')
+        return return_object
     if not os.path.exists(app.config['UPLOAD_FOLDER']):
         os.mkdir(app.config['UPLOAD_FOLDER'])
     if request.method == 'POST':
